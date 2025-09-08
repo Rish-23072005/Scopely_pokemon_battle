@@ -209,7 +209,7 @@ All requests should be sent as JSON with the following structure:
 ### Common Issues
 
 **Server won't start:**
-- Ensure Python 3.7+ is installed: `python --version`
+- Ensure Python 3.9+ is installed: `python --version`
 - Check if port 8000 is available
 - Verify all dependencies are installed: `pip list`
 
