@@ -20,7 +20,7 @@ This repository contains everything you need to get started:
 - **Documentation**: This detailed README with setup instructions
 - **Test Suite**: Robust testing framework using pytest
 
-## 🏗Project Structure
+## Project Structure
 
 ```
 SCOPELY_POKEMON/
@@ -183,7 +183,7 @@ pytest testing/battle.py
 pytest testing/resources.py
 ```
 
-## 🛠️ API Reference
+## API Reference
 
 ### Endpoints
 
