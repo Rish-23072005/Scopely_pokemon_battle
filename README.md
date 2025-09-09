@@ -1,51 +1,303 @@
-Pokémon Battle Simulation - MCP ServerThis project is an implementation of a Model Context Protocol (MCP) server that provides AI models with two core capabilities: a Pokémon Data Resource and a Battle Simulation Tool. The server acts as a bridge, allowing an AI to query a public dataset for Pokémon information and to perform a battle simulation between two Pokémon.The architecture is designed to be modular and easy to extend, following the principles of the MCP.DeliverablesThis submission includes:All Code and Supporting Files: The entire project structure with code for the server, resources, tools, and tests.Dependencies: A requirements.txt file to manage all necessary Python packages.This README File: Clear instructions for setup and usage.Project StructureThe project is organized into logical directories to separate concerns:SCOPELY_POKEMON/
+# Pokémon Battle Simulation - MCP Server
+
+A comprehensive Model Context Protocol (MCP) server that provides AI models with access to Pokémon data and battle simulation capabilities.
+
+## Features
+
+###Pokémon Data Resource
+- **Comprehensive Pokémon Information**: Access to detailed data for all Pokémon including:
+  - Base stats (HP, Attack, Defense, Special Attack, Special Defense, Speed)
+  - Types and type effectiveness
+  - Abilities and their effects
+  - Available moves with detailed information
+  - Evolution chains and requirements
+  - Sprites and visual data
+
+### Battle Simulation Tool
+- **Realistic Battle Mechanics**: 
+  - Type effectiveness calculations (Fire beats Grass, Water beats Fire, etc.)
+  - Accurate damage calculations using official Pokémon formulas
+  - Turn order based on Speed stats
+  - Critical hit mechanics
+  - STAB (Same Type Attack Bonus)
+
+- **Status Effects System**: 
+  - **Paralysis**: 25% chance to be unable to move, speed reduced by 75%
+  - **Burn**: Continuous HP damage, physical attack reduced by 50%
+  - **Poison**: Continuous HP damage each turn
+  - **Badly Poisoned**: Increasing damage each turn
+  - **Freeze**: Unable to move with chance to thaw
+  - **Sleep**: Unable to move for 1-3 turns
+
+- **Detailed Battle Logs**: Complete turn-by-turn battle reports with outcomes
+
+## Project Structure
+
+```
+SCOPELY_POKEMON/
 ├── resource_encyclopedia/
 │   ├── __init__.py
-│   └── poke_data.py            # The Pokémon Data Resource
+│   └── poke_data.py              # Pokémon Data Resource
 ├── rule/
 │   ├── __init__.py
-│   ├── chart.py                # Type effectiveness rules
-│   ├── damage_calcu.py         # Damage calculation logic
-│   └── stat_effect.py          # Status effect rules
+│   ├── chart.py                  # Type effectiveness calculations
+│   ├── damage_calcu.py           # Damage calculation engine
+│   └── stat_effect.py            # Status effect management
 ├── testing/
 │   ├── __init__.py
-│   ├── battle.py               # Tests for battle simulation
-│   └── resources.py            # Tests for the data resource
+│   ├── battle.py                 # Battle simulation tests
+│   └── resources.py              # Data resource tests
 ├── tools/
 │   ├── __init__.py
-│   └── battle_simulate.py      # The Battle Simulation Tool
-├── dispatcher.py               # Routes incoming requests
-├── main.py                     # FastAPI server entry point
-└── requirements.txt            # Project dependencies
+│   └── battle_simulate.py        # Battle Simulation Tool
+├── dispatcher.py                 # MCP request routing logic
+├── main.py                       # FastAPI server entry point
+├── requirements.txt              # Project dependencies
+└── README.md                     # This file
+```
 
-How to Install and Run the ServerFollow these simple steps to get the server running.1. PrerequisitesMake sure you have Python 3.7+ and a package manager like pip installed.2. Install DependenciesOpen your terminal, navigate to the project's root directory, and install the required packages. It's recommended to use a virtual environment.# Optional: Create a virtual environment
-python -m venv env
+## Installation & Setup
 
-# On Windows, activate with: .\env\Scripts\activate
+### Prerequisites
+- Python 3.8 or higher
+- Internet connection (for PokéAPI access)
 
-# On macOS/Linux, activate with: source env/bin/activate
-
-# Install the dependencies
-
+### Step 1: Install Dependencies
+```bash
 pip install -r requirements.txt
+```
 
-3. Start the ServerWith the dependencies installed, you can start the FastAPI server.python main.py
+### Step 2: Start the Server
+```bash
+python main.py
+```
 
-If successful, you will see a message indicating that Uvicorn is running, typically on <http://localhost:8000.How> to Use the ServerThe server is now live and can be queried. You can use a tool like curl or PowerShell's Invoke-RestMethod to interact with it.Task 1: Query the Pokémon Data ResourceThis action exposes comprehensive data for any given Pokémon.Example Request: Get data for Pikachu.$jsonBody = @{
-    action = "info"
-    pokemon = "pikachu"
-} | ConvertTo-Json
+The server will start on `http://localhost:8000`
 
-Invoke-RestMethod -Uri "<http://localhost:8000/>" -Method Post -Headers @{"Content-Type" = "application/json"} -Body $jsonBody
+### Step 3: Verify Installation
+Visit `http://localhost:8000` to see the server information, or check the health endpoint:
+```bash
+curl http://localhost:8000/health
+```
 
-Expected Response: A JSON object with Pikachu's stats, types, abilities, and moves.Task 2: Use the Battle Simulation ToolThis action simulates a full battle between two Pokémon.Example Request: Simulate a battle between Charmander and Squirtle.$jsonBody = @{
-    action = "battle"
-    pokemon1 = "charmander"
-    pokemon2 = "squirtle"
-} | ConvertTo-Json
+## Usage
 
-Invoke-RestMethod -Uri "<http://localhost:8000/>" -Method Post -Headers @{"Content-Type" = "application/json"} -Body $jsonBody
+### MCP Protocol Endpoints
 
-Expected Response: A JSON object with the winner and a detailed battle_log of the fight.How to Test the ProjectThe project includes a robust test suite using pytest. This is the best way to confirm that all functions are working correctly.Make sure you are in the project's root directory.Run the tests with the following command:pytest
+#### Initialize Connection
+```bash
+POST /mcp
+{
+  "jsonrpc": "2.0",
+  "method": "initialize",
+  "id": "1"
+}
+```
 
-This command will automatically discover and run all the tests in the testing/ folder, verifying that the data resource and battle simulation logic are working as intended.
+#### List Available Resources
+```bash
+POST /mcp
+{
+  "jsonrpc": "2.0",
+  "method": "resources/list",
+  "id": "2"
+}
+```
+
+#### Get Pokémon Data
+```bash
+POST /mcp
+{
+  "jsonrpc": "2.0",
+  "method": "resources/read",
+  "params": {
+    "uri": "pokemon://data",
+    "pokemon": "pikachu"
+  },
+  "id": "3"
+}
+```
+
+#### List Available Tools
+```bash
+POST /mcp
+{
+  "jsonrpc": "2.0",
+  "method": "tools/list",
+  "id": "4"
+}
+```
+
+#### Simulate Battle
+```bash
+POST /mcp
+{
+  "jsonrpc": "2.0",
+  "method": "tools/call",
+  "params": {
+    "name": "battle_simulate",
+    "arguments": {
+      "pokemon1": "pikachu",
+      "pokemon2": "charmander",
+      "level1": 50,
+      "level2": 50
+    }
+  },
+  "id": "5"
+}
+```
+
+### Direct API Endpoints (for testing)
+
+#### Get Pokémon Data
+```bash
+GET /pokemon/{pokemon_name}
+# Example: GET /pokemon/pikachu
+```
+
+#### Simulate Battle
+```bash
+POST /battle?pokemon1=pikachu&pokemon2=charmander
+```
+
+## Testing
+
+### Run Battle Tests
+```bash
+cd testing
+python battle.py
+```
+
+### Run Resource Tests
+```bash
+cd testing
+python resources.py
+```
+
+### Test Coverage
+The testing suite includes:
+- Basic battle simulations
+- Level difference battles
+- Type advantage scenarios
+- Invalid input handling
+- Pokémon data retrieval
+- Caching mechanism verification
+- Type effectiveness queries
+
+## API Examples
+
+### Example: Getting Pikachu's Data
+```python
+import httpx
+import asyncio
+
+async def get_pikachu():
+    async with httpx.AsyncClient() as client:
+        response = await client.get("http://localhost:8000/pokemon/pikachu")
+        data = response.json()
+        print(f"Name: {data['name']}")
+        print(f"Types: {data['types']}")
+        print(f"Base Stats: {data['base_stats']}")
+
+asyncio.run(get_pikachu())
+```
+
+### Example: Simulating a Battle
+```python
+import httpx
+import asyncio
+
+async def simulate_battle():
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "http://localhost:8000/battle",
+            params={"pokemon1": "pikachu", "pokemon2": "charmander"}
+        )
+        result = response.json()
+        print(f"Winner: {result['winner']}")
+        print(f"Battle Log:\n{result['battle_log']}")
+
+asyncio.run(simulate_battle())
+```
+
+## Configuration
+
+### Environment Variables
+- `PORT`: Server port (default: 8000)
+- `HOST`: Server host (default: 0.0.0.0)
+- `LOG_LEVEL`: Logging level (default: info)
+
+### Customization
+- **Add new status effects**: Modify `rule/stat_effect.py`
+- **Adjust damage calculations**: Update `rule/damage_calcu.py`
+- **Add new types**: Extend `rule/chart.py`
+- **Custom moves**: Enhance the move database in `resource_encyclopedia/poke_data.py`
+
+## Performance Features
+
+### Caching
+- Pokémon data is cached in memory after first request
+- Move details are cached to reduce API calls
+- Type effectiveness data is pre-loaded
+
+### Rate Limiting
+- Built-in request handling to avoid overwhelming PokéAPI
+- Efficient batch processing for multiple requests
+
+## Error Handling
+
+The server includes comprehensive error handling for:
+- Invalid Pokémon names
+- Network connectivity issues
+- Malformed MCP requests
+- Battle simulation errors
+- Resource access failures
+
+## Development
+
+### Adding New Features
+1. Create feature branch
+2. Implement changes following existing patterns
+3. Add tests in the `testing/` directory
+4. Update documentation
+5. Submit pull request
+
+### Code Style
+- Follow PEP 8 guidelines
+- Use type hints where possible
+- Include comprehensive docstrings
+- Maintain test coverage
+
+## Troubleshooting
+
+### Common Issues
+
+**Server won't start**
+- Check if port 8000 is available
+- Verify all dependencies are installed
+- Check Python version (3.8+ required)
+
+**Pokémon not found**
+- Verify exact spelling (use lowercase)
+- Check PokéAPI availability
+- Try common Pokémon names first
+
+**Battle simulation fails**
+- Ensure both Pokémon names are valid
+- Check network connectivity
+- Verify level parameters are between 1-100
+
+### Logs
+Server logs include detailed information about:
+- MCP request processing
+- API calls to PokéAPI
+- Battle simulation steps
+- Error conditions
+
+
+## Support
+
+For technical issues or questions about the MCP server implementation, please refer to:
+- [Model Context Protocol Documentation](https://modelcontextprotocol.io/introduction)
+- [PokéAPI Documentation](https://pokeapi.co/docs/v2)
+- Server logs for debugging information
