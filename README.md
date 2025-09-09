@@ -294,6 +294,189 @@ Server logs include detailed information about:
 - Battle simulation steps
 - Error conditions
 
+# 🚀 Pokémon Battle Simulation MCP Server - Setup & Run Guide
+
+This guide will walk you through setting up and running the Pokémon Battle Simulation MCP Server step by step.
+
+## 📋 Prerequisites
+
+- **Python 3.8 or higher** (Check with `python --version`)
+- **Internet connection** (Required for PokéAPI access)
+- **Terminal/Command Prompt access**
+
+## 📁 Project Structure Overview
+
+Your project should be organized as follows:
+
+```
+SCOPELY_POKEMON/
+├── resource_encyclopedia/
+│   ├── __init__.py
+│   └── poke_data.py
+├── rule/
+│   ├── __init__.py
+│   ├── chart.py
+│   ├── damage_calcu.py
+│   └── stat_effect.py
+├── testing/
+│   ├── __init__.py
+│   ├── battle.py
+│   └── resources.py
+├── tools/
+│   ├── __init__.py
+│   └── battle_simulate.py
+├── dispatcher.py
+├── main.py
+├── requirements.txt
+├── run_server.py
+├── quick_test.py
+└── README.md
+```
+
+## 🛠️ Installation Steps
+
+### Step 1: Create Project Directory
+```bash
+mkdir SCOPELY_POKEMON
+cd SCOPELY_POKEMON
+```
+
+### Step 2: Set Up Python Environment (Recommended)
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+```
+
+### Step 3: Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+If you encounter any issues, install dependencies manually:
+```bash
+pip install fastapi==0.104.1 uvicorn==0.24.0 pydantic==2.5.0 httpx==0.25.2 requests==2.31.0
+```
+
+### Step 4: Verify Installation
+```bash
+python -c "import fastapi, uvicorn, pydantic, httpx; print('✅ All dependencies installed successfully')"
+```
+
+## 🏃‍♂️ Running the Server
+
+### Option 1: Using the Run Script (Recommended)
+```bash
+python run_server.py
+```
+This script will:
+- Check all dependencies
+- Show usage examples
+- Start the server with proper configuration
+
+### Option 2: Direct Server Start
+```bash
+python main.py
+```
+
+### Option 3: Using Uvicorn Directly
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+## Verifying the Server
+
+### Quick Health Check
+Open your browser and go to:
+```
+http://localhost:8000
+```
+
+You should see server information with capabilities.
+
+### Automated Testing
+Run the comprehensive test suite:
+```bash
+python quick_test.py
+```
+
+This will test:
+- Server connectivity
+- MCP protocol endpoints
+- Pokémon data retrieval
+- Battle simulation
+- Error handling
+
+### Manual Testing
+Test individual components:
+
+1. **Get Pokémon Data:**
+   ```bash
+   curl http://localhost:8000/pokemon/pikachu
+   ```
+
+2. **Simulate Battle:**
+   ```bash
+   curl -X POST "http://localhost:8000/battle?pokemon1=pikachu&pokemon2=charmander"
+   ```
+
+3. **MCP Protocol Test:**
+   ```bash
+   curl -X POST http://localhost:8000/mcp \
+     -H "Content-Type: application/json" \
+     -d '{
+       "jsonrpc": "2.0",
+       "method": "initialize",
+       "id": "1"
+     }'
+   ```
+
+## 🔧 Development Testing
+
+### Run Unit Tests
+```bash
+# Test battle functionality
+cd testing
+python battle.py
+
+# Test resource functionality
+python resources.py
+```
+
+### Test with Different Pokémon
+```bash
+# Test with starter Pokémon
+curl http://localhost:8000/pokemon/bulbasaur
+curl http://localhost:8000/pokemon/squirtle
+curl http://localhost:8000/pokemon/charmander
+
+# Test battles
+curl -X POST "http://localhost:8000/battle?pokemon1=bulbasaur&pokemon2=charmander"
+curl -X POST "http://localhost:8000/battle?pokemon1=squirtle&pokemon2=charmander"
+```
+
+## API Endpoints Reference
+
+### Server Information
+- `GET /` - Server info and capabilities
+- `GET /health` - Health check
+- `GET /capabilities` - MCP capabilities
+
+### Pokémon Data
+- `GET /pokemon/{name}` - Get specific Pokémon data
+- Example: `GET /pokemon/pikachu`
+
+### Battle Simulation
+- `POST /battle?pokemon1={name1}&pokemon2={name2}` - Direct battle
+- Example: `POST /battle?pokemon1=pikachu&pokemon2=charmander`
+
+###
+
 
 ## Support
 
