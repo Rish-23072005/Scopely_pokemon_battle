@@ -294,97 +294,8 @@ Server logs include detailed information about:
 - Battle simulation steps
 - Error conditions
 
-# 🚀 Pokémon Battle Simulation MCP Server - Setup & Run Guide
 
-This guide will walk you through setting up and running the Pokémon Battle Simulation MCP Server step by step.
-
-## 📋 Prerequisites
-
-- **Python 3.8 or higher** (Check with `python --version`)
-- **Internet connection** (Required for PokéAPI access)
-- **Terminal/Command Prompt access**
-
-## 📁 Project Structure Overview
-
-Your project should be organized as follows:
-
-```
-SCOPELY_POKEMON/
-├── resource_encyclopedia/
-│   ├── __init__.py
-│   └── poke_data.py
-├── rule/
-│   ├── __init__.py
-│   ├── chart.py
-│   ├── damage_calcu.py
-│   └── stat_effect.py
-├── testing/
-│   ├── __init__.py
-│   ├── battle.py
-│   └── resources.py
-├── tools/
-│   ├── __init__.py
-│   └── battle_simulate.py
-├── dispatcher.py
-├── main.py
-├── requirements.txt
-├── run_server.py
-├── quick_test.py
-└── README.md
-```
-
-## 🛠️ Installation Steps
-
-### Step 1: Create Project Directory
-```bash
-mkdir SCOPELY_POKEMON
-cd SCOPELY_POKEMON
-```
-
-### Step 2: Set Up Python Environment (Recommended)
-```bash
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-```
-
-### Step 3: Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-If you encounter any issues, install dependencies manually:
-```bash
-pip install fastapi==0.104.1 uvicorn==0.24.0 pydantic==2.5.0 httpx==0.25.2 requests==2.31.0
-```
-
-### Step 4: Verify Installation
-```bash
-python -c "import fastapi, uvicorn, pydantic, httpx; print('✅ All dependencies installed successfully')"
-```
-
-## 🏃‍♂️ Running the Server
-
-### Option 1: Using the Run Script (Recommended)
-```bash
-python run_server.py
-```
-This script will:
-- Check all dependencies
-- Show usage examples
-- Start the server with proper configuration
-
-### Option 2: Direct Server Start
-```bash
-python main.py
-```
-
-### Option 3: Using Uvicorn Directly
+### Option : Using Uvicorn Directly
 ```bash
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
@@ -436,7 +347,7 @@ Test individual components:
      }'
    ```
 
-## 🔧 Development Testing
+## Development Testing
 
 ### Run Unit Tests
 ```bash
@@ -474,8 +385,6 @@ curl -X POST "http://localhost:8000/battle?pokemon1=squirtle&pokemon2=charmander
 ### Battle Simulation
 - `POST /battle?pokemon1={name1}&pokemon2={name2}` - Direct battle
 - Example: `POST /battle?pokemon1=pikachu&pokemon2=charmander`
-
-###
 
 
 ## Support
