@@ -1,4 +1,9 @@
 fastapi
-uvicorn[standard]
+uvicorn
+pydantic
+httpx
+asyncio-mqtt
+python-multipart
 requests
-pytest
+aiofiles
+typing-extensions
